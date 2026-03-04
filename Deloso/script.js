@@ -3,14 +3,20 @@ const taskInput = document.getElementById('task-input');
 const addTaskBtn = document.getElementById('add-task-btn');
 const taskList = document.getElementById('task-list');
 addTaskBtn.addEventListener('click', addTask);
+taskList.addEventListener('click', handleTaskListClick); // Corrected function name
+
 function addTask() {
     const taskText = taskInput.value.trim();
     if (taskText !== '') {
         tasks.push({ text: taskText, completed: false });
         renderTasks();
         taskInput.value = '';
+        showNotification('Task added successfully');
+    } else {
+        showNotification('No task added. Please enter a task.');
     }
 }
+
 function renderTasks() {
     taskList.innerHTML = '';
     if (tasks.length === 0) {
@@ -31,26 +37,30 @@ function renderTasks() {
     }
 }
 
-function handleTaskListClick(event){
-    if (event.target.classList.contains('delete-btn')){
+function handleTaskListClick(event) {
+    if (event.target.classList.contains('delete-btn')) {
         const taskIndex = Array.prototype.indexOf.call(taskList.children, event.target.parentNode);
         tasks.splice(taskIndex, 1);
         renderTasks();
+    } else if (event.target.tagName === 'SPAN') {
+        const taskIndex = [...taskList.children].indexOf(event.target.parentNode);
+        tasks[taskIndex].completed = !tasks[taskIndex].completed;
+        renderTasks(); // Added parentheses to actually call the function
     }
 }
 
-function showNotification (message) {
+function showNotification(message) {
     const notification = document.createElement('div');
     notification.textContent = message;
-    notification.style.postion = 'fixed';
+    notification.style.position = 'fixed'; // Fixed typo 'postion'
     notification.style.top = '10px';
     notification.style.right = '10px';
-    notification.style.backgroun = 'green';
+    notification.style.backgroundColor = 'green'; // Fixed typo 'backgroun'
     notification.style.color = 'white';
     notification.style.padding = '10px';
     notification.style.borderRadius = '5px';
     document.body.appendChild(notification);
-    setTimeout (()=> {
+    setTimeout(() => {
         notification.remove();
     }, 2000);
 }
